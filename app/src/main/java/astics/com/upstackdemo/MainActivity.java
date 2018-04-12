@@ -1,5 +1,6 @@
 package astics.com.upstackdemo;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -9,13 +10,10 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
-
-import com.giphy.sdk.core.models.enums.MediaType;
-import com.giphy.sdk.core.network.api.CompletionHandler;
-import com.giphy.sdk.core.network.api.GPHApi;
-import com.giphy.sdk.core.network.api.GPHApiClient;
-import com.giphy.sdk.core.network.response.MediaResponse;
+import android.view.View;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,22 +36,22 @@ public class MainActivity extends AppCompatActivity {
             Intent intent = new Intent(MainActivity.this, PlayerActivity.class);
             intent.putExtra("data", images);
             startActivity(intent);
-
         }
     };
+    private ProgressBar mProgressBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        mProgressBar = findViewById(R.id.progress_bar);
         setUpToolbar();
         setUpRecyclerView();
         setupSearchView();
-        //  initGify();
     }
 
     private void setUpToolbar() {
-        Toolbar mToolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar mToolbar = findViewById(R.id.toolbar);
         mToolbar.setTitleTextColor(ContextCompat.getColor(this, R.color.black));
 
         mToolbar.setTitle("Search Gifs");
@@ -61,30 +59,15 @@ public class MainActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(false);
     }
 
-    private void initGify() {
-        GPHApi client = new GPHApiClient(getString(R.string.api_key));
-        client.random("cats dogs", MediaType.gif, null, new CompletionHandler<MediaResponse>() {
-            @Override
-            public void onComplete(MediaResponse result, Throwable e) {
-                if (result == null) {
-                    // Do what you want to do with the error
-                } else {
-                    if (result.getData() != null) {
-                        Log.e("giphy", result.getData().getUrl());
-                    } else {
-                        Log.e("giphy error", "No results found");
-                    }
-                }
-            }
-        });
-
-    }
-
     private void setupSearchView() {
         mSearchView = findViewById(R.id.search_view);
         mSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(final String query) {
+                if (mSearchView != null) {
+                    InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                    imm.hideSoftInputFromWindow(mSearchView.getWindowToken(), 0);
+                }
                 listOfImage.clear();
                 searchGif(query);
                 return true;
@@ -98,10 +81,12 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void searchGif(String query) {
+        mProgressBar.setVisibility(View.VISIBLE);
         Call<ResponseModel> call = ApiClient.apiService.getSearchedGifs(query, getString(R.string.api_key));
         call.enqueue(new Callback<ResponseModel>() {
             @Override
             public void onResponse(@NonNull Call<ResponseModel> call, @NonNull Response<ResponseModel> response) {
+                mProgressBar.setVisibility(View.GONE);
                 if (response.isSuccessful()) {
                     List<ResponseModel.Data> data = new ArrayList<>();
                     data.addAll(response.body().getData());
@@ -110,13 +95,14 @@ public class MainActivity extends AppCompatActivity {
                     }
                     mAdapter.notifyDataSetChanged();
                 } else {
-
+                    Toast.makeText(MainActivity.this, response.message(), Toast.LENGTH_SHORT).show();
                 }
             }
 
             @Override
             public void onFailure(@NonNull Call<ResponseModel> call, @NonNull Throwable t) {
-
+                mProgressBar.setVisibility(View.GONE);
+                Toast.makeText(MainActivity.this, t.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
             }
         });
     }
