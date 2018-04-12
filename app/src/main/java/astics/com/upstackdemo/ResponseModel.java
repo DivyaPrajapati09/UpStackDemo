@@ -2,6 +2,7 @@ package astics.com.upstackdemo;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
@@ -49,7 +50,7 @@ public class ResponseModel {
         }
     }
 
-    class ImageData {
+    class ImageData implements Serializable{
         String url;   //": "https://media2.giphy.com/media/ypqHf6pQ5kQEg/100.gif",
         String width; // ": "91",
         String height;   //": "100",

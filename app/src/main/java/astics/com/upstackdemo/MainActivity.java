@@ -1,11 +1,14 @@
 package astics.com.upstackdemo;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 
 import com.giphy.sdk.core.models.enums.MediaType;
@@ -31,7 +34,10 @@ public class MainActivity extends AppCompatActivity {
 
     private RecyclerAdapter.OnRecyclerViewItemClickListener mOnListClickListener = new RecyclerAdapter.OnRecyclerViewItemClickListener() {
         @Override
-        public void onListItemClick() {
+        public void onListItemClick(ResponseModel.ImageData images) {
+            Intent intent = new Intent(MainActivity.this, PlayerActivity.class);
+            intent.putExtra("data", images);
+            startActivity(intent);
 
         }
     };
@@ -40,10 +46,19 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        setUpToolbar();
         setUpRecyclerView();
         setupSearchView();
         //  initGify();
+    }
+
+    private void setUpToolbar() {
+        Toolbar mToolbar = (Toolbar) findViewById(R.id.toolbar);
+        mToolbar.setTitleTextColor(ContextCompat.getColor(this, R.color.black));
+
+        mToolbar.setTitle("Search Gifs");
+        setSupportActionBar(mToolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(false);
     }
 
     private void initGify() {
@@ -70,6 +85,7 @@ public class MainActivity extends AppCompatActivity {
         mSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(final String query) {
+                listOfImage.clear();
                 searchGif(query);
                 return true;
             }
@@ -93,6 +109,8 @@ public class MainActivity extends AppCompatActivity {
                         listOfImage.add(data1.getImages().getImageData());
                     }
                     mAdapter.notifyDataSetChanged();
+                } else {
+
                 }
             }
 
