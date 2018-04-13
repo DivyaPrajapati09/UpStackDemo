@@ -26,9 +26,9 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
     private static final String TAG = RecyclerAdapter.class.getSimpleName();
     private Context mContext;
     private OnRecyclerViewItemClickListener mOnRecyclerViewItemClickListener;
-    private List<ResponseModel.ImageData> mListOfImage = new ArrayList<>();
+    private List<ImageData> mListOfImage = new ArrayList<>();
 
-    public RecyclerAdapter(Context context, List<ResponseModel.ImageData> listOfImage, OnRecyclerViewItemClickListener onRecyclerViewItemClickListener) {
+    public RecyclerAdapter(Context context, List<ImageData> listOfImage, OnRecyclerViewItemClickListener onRecyclerViewItemClickListener) {
         mContext = context;
         mListOfImage = listOfImage;
         mOnRecyclerViewItemClickListener = onRecyclerViewItemClickListener;
@@ -43,7 +43,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
-        final ResponseModel.ImageData images = mListOfImage.get(holder.getAdapterPosition());
+        final ImageData images = mListOfImage.get(holder.getAdapterPosition());
         Log.e(TAG, "onBindViewHolder: webp : " + images.getWebp());
         try {
             Glide.with(mContext).load(images.getUrl().trim()).listener(new RequestListener<Drawable>() {
@@ -80,7 +80,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
     }
 
     public interface OnRecyclerViewItemClickListener {
-        void onListItemClick(ResponseModel.ImageData images);
+        void onListItemClick(ImageData images);
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {

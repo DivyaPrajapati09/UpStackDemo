@@ -4,6 +4,7 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/UpstackDemo.iml" filepath="$PROJECT_DIR$/UpstackDemo.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://D:/giphy-android-sdk-core/app/giphy-android-sdk-core.iml" filepath="D:/giphy-android-sdk-core/app/giphy-android-sdk-core.iml" />
     </modules>
   </component>
 </project>

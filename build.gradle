@@ -1,14 +1,18 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 
 buildscript {
-    
+    ext.objectboxVersion = '1.4.3'
     repositories {
         google()
         jcenter()
+        mavenCentral()
+        maven {
+            url  "https://giphy.bintray.com/giphy-sdk"
+        }
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:3.0.1'
-        
+        classpath "io.objectbox:objectbox-gradle-plugin:$objectboxVersion"
 
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
@@ -19,6 +23,9 @@ allprojects {
     repositories {
         google()
         jcenter()
+        maven {
+            url  "https://giphy.bintray.com/giphy-sdk"
+        }
     }
 }
 

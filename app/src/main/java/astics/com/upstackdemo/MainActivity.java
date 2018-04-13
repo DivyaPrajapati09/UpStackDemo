@@ -28,17 +28,17 @@ public class MainActivity extends AppCompatActivity {
     private RecyclerView mRecyclerView;
     private RecyclerAdapter mAdapter;
     private SearchView mSearchView;
-    private List<ResponseModel.ImageData> listOfImage = new ArrayList<>();
+    private List<ImageData> listOfImage = new ArrayList<>();
+    private ProgressBar mProgressBar;
 
     private RecyclerAdapter.OnRecyclerViewItemClickListener mOnListClickListener = new RecyclerAdapter.OnRecyclerViewItemClickListener() {
         @Override
-        public void onListItemClick(ResponseModel.ImageData images) {
+        public void onListItemClick(ImageData images) {
             Intent intent = new Intent(MainActivity.this, PlayerActivity.class);
             intent.putExtra("data", images);
             startActivity(intent);
         }
     };
-    private ProgressBar mProgressBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -88,9 +88,9 @@ public class MainActivity extends AppCompatActivity {
             public void onResponse(@NonNull Call<ResponseModel> call, @NonNull Response<ResponseModel> response) {
                 mProgressBar.setVisibility(View.GONE);
                 if (response.isSuccessful()) {
-                    List<ResponseModel.Data> data = new ArrayList<>();
+                    List<Data> data = new ArrayList<>();
                     data.addAll(response.body().getData());
-                    for (ResponseModel.Data data1 : data) {
+                    for (Data data1 : data) {
                         listOfImage.add(data1.getImages().getImageData());
                     }
                     mAdapter.notifyDataSetChanged();
