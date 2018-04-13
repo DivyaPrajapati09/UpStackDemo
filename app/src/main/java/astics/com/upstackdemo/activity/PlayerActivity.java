@@ -8,6 +8,7 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import com.google.android.exoplayer2.ExoPlaybackException;
 import com.google.android.exoplayer2.ExoPlayerFactory;
@@ -30,6 +31,7 @@ import com.google.android.exoplayer2.upstream.DefaultBandwidthMeter;
 import com.google.android.exoplayer2.upstream.DefaultHttpDataSourceFactory;
 
 import astics.com.upstackdemo.R;
+import astics.com.upstackdemo.app.InternetConnection;
 import astics.com.upstackdemo.model.ImageData;
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -53,79 +55,86 @@ public class PlayerActivity extends AppCompatActivity {
 
     private void initPlayer() {
         ImageData images = (ImageData) getIntent().getSerializableExtra("data");
-        try {
+        if (InternetConnection.checkConnection(this)) {
+            try {
 
-            BandwidthMeter bandwidthMeter = new DefaultBandwidthMeter();
-            TrackSelector trackSelector = new DefaultTrackSelector(new AdaptiveTrackSelection.Factory(bandwidthMeter));
-            exoPlayer = ExoPlayerFactory.newSimpleInstance(this, trackSelector);
+                BandwidthMeter bandwidthMeter = new DefaultBandwidthMeter();
+                TrackSelector trackSelector = new DefaultTrackSelector(new AdaptiveTrackSelection.Factory(bandwidthMeter));
+                exoPlayer = ExoPlayerFactory.newSimpleInstance(this, trackSelector);
 
-            Uri videoURI = Uri.parse(images.getMp4());
+                Uri videoURI = Uri.parse(images.getMp4());
 
-            DefaultHttpDataSourceFactory dataSourceFactory = new DefaultHttpDataSourceFactory("exoplayer_video");
-            ExtractorsFactory extractorsFactory = new DefaultExtractorsFactory();
-            MediaSource mediaSource = new ExtractorMediaSource(videoURI, dataSourceFactory, extractorsFactory, null, null);
+                DefaultHttpDataSourceFactory dataSourceFactory = new DefaultHttpDataSourceFactory("exoplayer_video");
+                ExtractorsFactory extractorsFactory = new DefaultExtractorsFactory();
+                MediaSource mediaSource = new ExtractorMediaSource(videoURI, dataSourceFactory, extractorsFactory, null, null);
 
-            exoPlayerView.setPlayer(exoPlayer);
-            exoPlayer.prepare(mediaSource);
-            exoPlayer.setPlayWhenReady(true);
-            exoPlayer.addListener(new Player.EventListener() {
+                exoPlayerView.setPlayer(exoPlayer);
+                exoPlayer.prepare(mediaSource);
+                exoPlayer.setPlayWhenReady(true);
+                exoPlayer.addListener(new Player.EventListener() {
 
-                @Override
-                public void onTimelineChanged(Timeline timeline, Object manifest, int reason) {
+                    @Override
+                    public void onTimelineChanged(Timeline timeline, Object manifest, int reason) {
 
-                }
-
-                @Override
-                public void onTracksChanged(TrackGroupArray trackGroups, TrackSelectionArray trackSelections) {
-
-                }
-
-                @Override
-                public void onLoadingChanged(boolean isLoading) {
-
-                }
-
-                @Override
-                public void onPlayerStateChanged(boolean playWhenReady, int playbackState) {
-                    if (playbackState == Player.STATE_BUFFERING) {
-                        progressBar.setVisibility(View.VISIBLE);
-                    } else {
-                        progressBar.setVisibility(View.INVISIBLE);
                     }
-                }
 
-                @Override
-                public void onRepeatModeChanged(int repeatMode) {
+                    @Override
+                    public void onTracksChanged(TrackGroupArray trackGroups, TrackSelectionArray trackSelections) {
 
-                }
+                    }
 
-                @Override
-                public void onShuffleModeEnabledChanged(boolean shuffleModeEnabled) {
+                    @Override
+                    public void onLoadingChanged(boolean isLoading) {
 
-                }
+                    }
 
-                @Override
-                public void onPlayerError(ExoPlaybackException error) {
+                    @Override
+                    public void onPlayerStateChanged(boolean playWhenReady, int playbackState) {
+                        if (playbackState == Player.STATE_BUFFERING) {
+                            progressBar.setVisibility(View.VISIBLE);
+                        } else {
+                            progressBar.setVisibility(View.INVISIBLE);
+                        }
+                    }
 
-                }
+                    @Override
+                    public void onRepeatModeChanged(int repeatMode) {
 
-                @Override
-                public void onPositionDiscontinuity(int reason) {
+                    }
 
-                }
+                    @Override
+                    public void onShuffleModeEnabledChanged(boolean shuffleModeEnabled) {
 
-                @Override
-                public void onPlaybackParametersChanged(PlaybackParameters playbackParameters) {
+                    }
 
-                }
+                    @Override
+                    public void onPlayerError(ExoPlaybackException error) {
+                        progressBar.setVisibility(View.INVISIBLE);
+                        Toast.makeText(PlayerActivity.this, error.getCause().toString(), Toast.LENGTH_SHORT).show();
+                    }
 
-                @Override
-                public void onSeekProcessed() {
+                    @Override
+                    public void onPositionDiscontinuity(int reason) {
 
-                }
-            });
-        } catch (Exception e) {
-            Log.e("MainAcvtivity", " exoplayer error " + e.toString());
+                    }
+
+                    @Override
+                    public void onPlaybackParametersChanged(PlaybackParameters playbackParameters) {
+
+                    }
+
+                    @Override
+                    public void onSeekProcessed() {
+
+                    }
+                });
+            } catch (Exception e) {
+                Log.e("MainAcvtivity", " exoplayer error " + e.toString());
+            }
+        } else {
+            progressBar.setVisibility(View.INVISIBLE);
+            Toast.makeText(this, "No internet connection", Toast.LENGTH_SHORT).show();
+            finish();
         }
 
     }

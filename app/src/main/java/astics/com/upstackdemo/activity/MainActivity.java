@@ -17,6 +17,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,6 +25,7 @@ import java.util.List;
 import astics.com.upstackdemo.R;
 import astics.com.upstackdemo.adapter.RecyclerAdapter;
 import astics.com.upstackdemo.api.ApiClient;
+import astics.com.upstackdemo.app.InternetConnection;
 import astics.com.upstackdemo.app.MyApplication;
 import astics.com.upstackdemo.dbModel.DBModel;
 import astics.com.upstackdemo.model.Data;
@@ -57,9 +59,13 @@ public class MainActivity extends AppCompatActivity {
     private RecyclerAdapter.OnRecyclerViewItemClickListener mOnListClickListener = new RecyclerAdapter.OnRecyclerViewItemClickListener() {
         @Override
         public void onListItemClick(ImageData images) {
-            Intent intent = new Intent(MainActivity.this, PlayerActivity.class);
-            intent.putExtra("data", images);
-            startActivity(intent);
+            if (InternetConnection.checkConnection(MainActivity.this)) {
+                Intent intent = new Intent(MainActivity.this, PlayerActivity.class);
+                intent.putExtra("data", images);
+                startActivity(intent);
+            } else {
+                Toast.makeText(MainActivity.this, "No internet connection", Toast.LENGTH_SHORT).show();
+            }
         }
 
         @Override
@@ -112,11 +118,15 @@ public class MainActivity extends AppCompatActivity {
             InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
             imm.hideSoftInputFromWindow(mSearchView.getWindowToken(), 0);
         }
-        assert mSearchView != null;
-        String searchQuery = mSearchView.getText().toString().trim();
-        if (!TextUtils.isEmpty(searchQuery)) {
-            listOfImage.clear();
-            searchGif(searchQuery);
+        if (InternetConnection.checkConnection(this)) {
+            assert mSearchView != null;
+            String searchQuery = mSearchView.getText().toString().trim();
+            if (!TextUtils.isEmpty(searchQuery)) {
+                listOfImage.clear();
+                searchGif(searchQuery);
+            }
+        } else {
+            Toast.makeText(this, "No internet connection", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -133,7 +143,8 @@ public class MainActivity extends AppCompatActivity {
 
                     @Override
                     public void onError(Throwable e) {
-
+                        mProgressBar.setVisibility(View.GONE);
+                        Toast.makeText(MainActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
                     }
 
                     @Override
