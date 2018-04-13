@@ -1,4 +1,4 @@
-package astics.com.upstackdemo;
+package astics.com.upstackdemo.model;
 
 import com.google.gson.annotations.SerializedName;
 

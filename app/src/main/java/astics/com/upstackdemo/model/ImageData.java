@@ -1,14 +1,9 @@
-package astics.com.upstackdemo;
+package astics.com.upstackdemo.model;
 
 import java.io.Serializable;
 
-import io.objectbox.annotation.Entity;
-import io.objectbox.annotation.Id;
-
-@Entity
 public class ImageData implements Serializable {
-    @Id
-    public long id;
+
     public String url;   //": "https://media2.giphy.com/media/ypqHf6pQ5kQEg/100.gif",
     public String width; // ": "91",
     public String height;   //": "100",
@@ -17,14 +12,6 @@ public class ImageData implements Serializable {
     public String mp4_size;     //": "18591",
     public String webp;    //": "https://media2.giphy.com/media/ypqHf6pQ5kQEg/100.webp",
     public String webp_size;   //": "115556"
-
-    public long getId() {
-        return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
-    }
 
     public String getUrl() {
         return url;

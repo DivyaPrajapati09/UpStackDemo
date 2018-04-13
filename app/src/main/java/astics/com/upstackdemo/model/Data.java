@@ -1,15 +1,8 @@
-package astics.com.upstackdemo;
+package astics.com.upstackdemo.model;
 
 import com.google.gson.annotations.SerializedName;
 
-import io.objectbox.annotation.Entity;
-import io.objectbox.annotation.Id;
-
-@Entity
 public class Data {
-
-    @Id
-    public long id;
     @SerializedName("id")
     public String imageId;
 
@@ -27,14 +20,6 @@ public class Data {
 
     public void setImages(Images images) {
         this.images = images;
-    }
-
-    public long getId() {
-        return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
     }
 
     public String getImageId() {

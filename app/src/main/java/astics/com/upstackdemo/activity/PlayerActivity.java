@@ -1,10 +1,11 @@
-package astics.com.upstackdemo;
+package astics.com.upstackdemo.activity;
 
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
 
@@ -28,23 +29,30 @@ import com.google.android.exoplayer2.upstream.BandwidthMeter;
 import com.google.android.exoplayer2.upstream.DefaultBandwidthMeter;
 import com.google.android.exoplayer2.upstream.DefaultHttpDataSourceFactory;
 
+import astics.com.upstackdemo.R;
+import astics.com.upstackdemo.model.ImageData;
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 public class PlayerActivity extends AppCompatActivity {
 
-    SimpleExoPlayer exoPlayer;
-    private ProgressBar progressBar;
+    @BindView(R.id.simpleExoPlayerView)
+    SimpleExoPlayerView exoPlayerView;
+    @BindView(R.id.progress_bar)
+    ProgressBar progressBar;
+    private SimpleExoPlayer exoPlayer;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.video_player_activity);
-
+        ButterKnife.bind(this);
         initPlayer();
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
     private void initPlayer() {
-        SimpleExoPlayerView exoPlayerView = findViewById(R.id.simpleExoPlayerView);
-        progressBar = findViewById(R.id.progress_bar);
-        ResponseModel.ImageData images = (ResponseModel.ImageData) getIntent().getSerializableExtra("data");
+        ImageData images = (ImageData) getIntent().getSerializableExtra("data");
         try {
 
             BandwidthMeter bandwidthMeter = new DefaultBandwidthMeter();
@@ -79,7 +87,7 @@ public class PlayerActivity extends AppCompatActivity {
 
                 @Override
                 public void onPlayerStateChanged(boolean playWhenReady, int playbackState) {
-                    if (playbackState == Player.STATE_BUFFERING){
+                    if (playbackState == Player.STATE_BUFFERING) {
                         progressBar.setVisibility(View.VISIBLE);
                     } else {
                         progressBar.setVisibility(View.INVISIBLE);
@@ -120,5 +128,15 @@ public class PlayerActivity extends AppCompatActivity {
             Log.e("MainAcvtivity", " exoplayer error " + e.toString());
         }
 
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                finish();
+                break;
+        }
+        return super.onOptionsItemSelected(item);
     }
 }

@@ -6,7 +6,7 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="150dp">
 
         <ProgressBar
             android:id="@+id/progress_bar"
@@ -21,13 +21,28 @@
     </RelativeLayout>
 
     <LinearLayout
+        android:id="@+id/like_unlike_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:visibility="gone">
+
+        <TextView
+            android:id="@+id/txt_like_count"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:padding="5dp"
+            android:textColor="@color/black" />
 
         <ImageView
+            android:id="@+id/img_like"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:clickable="true"
+            android:gravity="center"
             android:padding="5dp"
             android:src="@drawable/ic_action_like" />
 
@@ -35,9 +50,22 @@
             android:layout_width="5dp"
             android:layout_height="match_parent" />
 
+        <TextView
+            android:id="@+id/txt_unlike_count"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:padding="5dp"
+            android:textColor="@color/black" />
+
         <ImageView
+            android:id="@+id/img_unlike"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:clickable="true"
+            android:gravity="center"
             android:padding="5dp"
             android:src="@drawable/ic_action_unlike" />
 
